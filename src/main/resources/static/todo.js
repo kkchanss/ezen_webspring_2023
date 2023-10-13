@@ -1,20 +1,23 @@
 console.log('todo.js');
 
+doGet();
 // 1. POST
 function doPost(){
 
-    let tcontent = document.querySelector(".tcontent");
-    let dto = {tcontent : tcontent};
+    let tcontent = document.querySelector(".input_tcontent");
+    console.log(tcontent.value)
+    let dto = { tno : 1, tcontent : tcontent.value, tstate : true };
 	$.ajax({
-		url : "../",
+		url : "/todo",
 		method : "post",
-		data : {dto : JSON.stringify(dto)},
-		dataType: 'json',
-		ContentType : 'application/json; charset=utf-8',
+		contentType : 'application/json',
+		data : JSON.stringify(dto),
+
 		success : r => {
 
 			if(r){ // 등록 성공
 				alert('등록 성공');
+				tcontent.value = "";
 				doGet();
 			} else { // 등록 실패
 				alert('등록 실패');
@@ -29,7 +32,7 @@ function doPost(){
 function doGet(){
 
 	$.ajax({
-		url : "../",
+		url : "/todo",
 		method : "get",
 		success : r => {
 			console.log(r);
@@ -47,7 +50,7 @@ function doGet(){
                     `;
                 }
                 html += `
-                    <div class="tcontent"> r[i].tcontent </div>
+                    <div class="tcontent"> ${r[i].tcontent} </div>
                     <div class="etcbtns">
                         <button onclick="doPut(${r[i].tno}, ${r[i].tstate})" type="button">상태변경</button>
                         <button onclick="doDelete(${r[i].tno})" type="button">제거하기</button>
@@ -65,17 +68,23 @@ function doGet(){
 // 3. PUT
 function doPut(tno, tstate){
 
+    tstate = !tstate
+
+    let dto = { tno : tno, tstate : tstate, tcontent : "test"}
+
 	$.ajax({
-		url : "../",
+		url : "/todo",
 		method : "put",
-		data : {tstate : tstate, tno : tno},
+		contentType : 'application/json',
+        data : JSON.stringify(dto),
 		success : r => {
 
-			if(r){ // 등록 성공
-				alert('상태 변경 성공');
+			if(r){
+				console.log('상태 변경 성공');
+
 				doGet();
-			} else { // 등록 실패
-				alert('상태 변경 실패');
+			} else {
+				console.log('상태 변경 실패');
 			}
 		},
 		error : e => {
@@ -87,7 +96,7 @@ function doPut(tno, tstate){
 function doDelete(tno){
 
 	$.ajax({
-		url : "../",
+		url : "/todo",
 		method : "delete",
 		data : {tno : tno},
 		success : r => {

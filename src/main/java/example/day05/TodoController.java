@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("todo")
 public class TodoController {
     @Autowired
     private TodoService todoService;
@@ -19,7 +20,7 @@ public class TodoController {
 
     @PostMapping("")
     public boolean doPost(@RequestBody TodoDto todoDto) {
-
+        System.out.println("doPost");
         return todoService.doPost(todoDto);
     }
 

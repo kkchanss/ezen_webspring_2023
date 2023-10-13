@@ -33,7 +33,7 @@ public class TodoService {
                 .build();
         // 2. JPARepositary를 이용한 엔티티 저장 [ insert 대체 ]
         todoEntityRepository.save(todoEntity);
-        return false;
+        return true;
     }
 
     public List<TodoDto> doGet() {
@@ -71,13 +71,13 @@ public class TodoService {
             updateEntity.setTstate(todoDto.isTstate());
         }
 
-        return false;
+        return true;
     }
 
     public boolean doDelete(@RequestParam int tno) {
 
         // 1. tno[pk필드번호]에 해당하는 엔티티 삭제
         todoEntityRepository.deleteById(tno);
-        return false;
+        return true;
     }
 }
