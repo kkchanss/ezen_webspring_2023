@@ -1,0 +1,9 @@
+POST http://localhost:8080/member/post
+Content-Type : application/json
+
+{
+  "memail" : "qweqwe@qweqwe.com" ,
+  "mpassword" : "123123" ,
+  "mname" : "강호동" ,
+  "mphone" : "010-1234-1234"
+}
