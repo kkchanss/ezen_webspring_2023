@@ -1,4 +1,4 @@
-package example.task;
+package example.task.Phone;
 
 import lombok.*;
 

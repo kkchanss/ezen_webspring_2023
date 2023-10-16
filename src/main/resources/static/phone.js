@@ -46,7 +46,7 @@ function doGet(){
                         <div class="pname"> ${r[i].pname} </div>
                         <div class="pphone"> ${r[i].pphone} </div>
                         <div class="btns">
-                            <button onclick="doPut()" type="button">수정하기</button>
+                            <button onclick="doPut(${r[i].pno})" type="button">수정하기</button>
                             <button onclick="doDelete(${r[i].pno})" type="button">제거하기</button>
                         </div>
                     </div>
@@ -60,12 +60,12 @@ function doGet(){
 	})
 }
 // 3. PUT
-function doPut(){
+function doPut(pno){
 
     let pname = prompt("이름을 입력해주세요");
     let pphone = prompt("전화번호를 입력해주세요");
 
-    let dto = { pno : 1, pname : pname, pphone : pphone}
+    let dto = { pno : pno, pname : pname, pphone : pphone}
 
 	$.ajax({
 		url : "/phone",

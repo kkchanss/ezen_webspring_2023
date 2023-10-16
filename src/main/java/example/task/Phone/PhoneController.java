@@ -1,4 +1,4 @@
-package example.task;
+package example.task.Phone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
