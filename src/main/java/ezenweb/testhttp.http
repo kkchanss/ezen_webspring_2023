@@ -1,9 +1,27 @@
-POST http://localhost:8080/member/post
-Content-Type : application/json
+###
+POST http://localhost:8080/board
+Content-Type: application/x-www-form-urlencoded
 
-{
-  "memail" : "qweqwe@qweqwe.com" ,
-  "mpassword" : "123123" ,
-  "mname" : "강호동" ,
-  "mphone" : "010-1234-1234"
-}
+btitle = "테스트제목" &
+bcontent= "테스트내용"&
+bfile= "테스트파일"&
+mno= 1
+
+###
+GET http://localhost:8080/board
+
+###
+PUT http://localhost:8080/board
+Content-Type: application/x-www-form-urlencoded
+
+bno = 1 &
+btitle = "테스트제목수정" &
+bcontent= "테스트내용수정"&
+bfile= "테스트파일수정"&
+mno= 1
+
+###
+DELETE http://localhost:8080/board?bno=1
+
+###
+GET http://localhost:8080/board
