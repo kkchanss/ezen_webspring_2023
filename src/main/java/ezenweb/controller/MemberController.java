@@ -9,8 +9,10 @@ import javax.servlet.http.HttpSession;
 import java.lang.reflect.Member;
 import java.util.List;
 
-@RestController
-@RequestMapping("member")
+// IOC : 제어역전 ( 객체 관리를 스프링에게 위임 = 왜? 개발자가 편하려고/협업하려고(객체 공유해서 쓰려고))
+// DI(Dependency injection) : 의존성 주입 [ 스프링이 객체를 관리하리까.. 스프링에게 객체를 의존(부탁)해서 주입(가져오기)]
+@RestController // 컨트롤러(@Component 포함 = 스프링컨테이너(스프링 관리하는 메모리 공간) 빈(객체) 등록) + ResponseBody
+@RequestMapping("/member")
 public class MemberController {
     // Controller -> Service 요청
     // Controller <- Service 응답
@@ -54,21 +56,14 @@ public class MemberController {
 
     // 7. 로그인
     @PostMapping("/login")
-    public boolean login(HttpSession session, @RequestBody MemberDto memberDto) {
-        if(memberService.login(memberDto) == null) return false;
-        session.setAttribute("memberSession", memberService.login(memberDto));
-        return true;
+    public boolean login(@RequestBody MemberDto memberDto) {
+        return memberService.login(memberDto);
     }
 
     // 8. 로그아웃
     @GetMapping("/logout")
-    public boolean logout(HttpSession session) {
+    public boolean logout() {
 
-        MemberDto dto = (MemberDto) session.getAttribute("memberSession");
-        if(dto != null) {
-            session.removeAttribute("memberSession");
-            return true;
-        }
-        return false;
+        return memberService.logout();
     }
 }
