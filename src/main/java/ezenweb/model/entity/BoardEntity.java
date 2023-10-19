@@ -29,8 +29,11 @@ public class BoardEntity extends BaseTime{ // 테이블 설계
     private int bview;
     @Column(columnDefinition = "longtext")
     private String bfile;
-    @Column
-    private int mno;
+
+    @ToString.Exclude // toString() 함수에서 제외되는 필드
+    @JoinColumn(name = "mno") // FK 필드로 사용 (name="FK필드명")
+    @ManyToOne // 다수가 하나에게 [ FK ]
+    private MemberEntity memberEntity;
 
     public BoardDto saveToDto() {
         return BoardDto.builder()
@@ -39,7 +42,7 @@ public class BoardEntity extends BaseTime{ // 테이블 설계
                 .bcontent(this.bcontent)
                 .bfile(this.bfile)
                 .bview(this.bview)
-                .mno(this.mno)
+                .mno(this.memberEntity.getMno())
                 .cdate(this.getCdate())
                 .udate(this.getUdate())
                 .build();
