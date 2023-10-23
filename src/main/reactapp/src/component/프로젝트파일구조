@@ -1,0 +1,16 @@
+reactapp
+    - node_modules
+    - public
+        - index.html
+        - favicon.ico
+    - src
+        - component
+            - example
+            - Index.html
+            - Main.js
+            - Header.js
+            - Footer.js
+    - gitignore
+    - package.json
+    - package-lock.json
+    - README.md
