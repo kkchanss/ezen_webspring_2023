@@ -18,6 +18,7 @@ import 도서목록 from "./example/task/task01/과제1_도서목록";
 import Task02List from "./example/task/task02/Task02List";
 import Login from "./member/Login";
 import Signup from "./member/Signup";
+import Axios컴포넌트 from "./example/day04/1_Axios컴포넌트";
 
 export default function Index(props) {
     return(<>
@@ -38,7 +39,7 @@ export default function Index(props) {
                         <Route path={'/example/day02/CommentList'} element={ < CommentList />} />
                         <Route path={'/example/task/Task02List'} element={ < Task02List />} />
                         <Route path={'/example/task/도서목록'} element={ < 도서목록 />} />
-
+                        <Route path={'/example/day04/Axios컴포넌트'} element={ < Axios컴포넌트 /> } />
                     { /* MEMBER */ }
                     <Route path={'/login'} element={ < Login />} />
                     <Route path={'/signup'} element={ < Signup />} />
