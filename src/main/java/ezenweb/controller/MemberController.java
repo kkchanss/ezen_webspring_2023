@@ -12,7 +12,8 @@ import java.util.List;
 // IOC : 제어역전 ( 객체 관리를 스프링에게 위임 = 왜? 개발자가 편하려고/협업하려고(객체 공유해서 쓰려고))
 // DI(Dependency injection) : 의존성 주입 [ 스프링이 객체를 관리하리까.. 스프링에게 객체를 의존(부탁)해서 주입(가져오기)]
 @RestController // 컨트롤러(@Component 포함 = 스프링컨테이너(스프링 관리하는 메모리 공간) 빈(객체) 등록) + ResponseBody
-@RequestMapping("/member")
+@RequestMapping("/member") // 클래스 매핑
+//@CrossOrigin("http://192.168.17.123:3000") // HTTP 헤더[Access-Control-Allow-Origin]에 교차 리소스 공유
 public class MemberController {
     // Controller -> Service 요청
     // Controller <- Service 응답
