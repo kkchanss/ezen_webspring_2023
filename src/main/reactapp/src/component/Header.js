@@ -1,7 +1,17 @@
 import { Link } from 'react-router-dom';
 import styles from '../css/header.css'
+import axios from "axios";
+
 
 export default function Header( props ){
+
+    // - 회원정보 호출 [ 로그인 여부 확인 ]
+    axios
+        .get('/member/get?mno=1')
+        .then(r => {
+            console.log(r.data);
+        })
+
     return(<>
         <header>
             <h2> <Link to='/'> 이젠리액트 </Link> </h2>

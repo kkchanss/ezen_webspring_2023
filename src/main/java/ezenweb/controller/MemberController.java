@@ -26,11 +26,19 @@ public class MemberController {
         return memberService.postMember(memberDto);
     }
 
-    // 2. [R] 회원정보 호출
+ /*   // 2. [R] 회원정보 호출
     @GetMapping("/get")
     public MemberDto getMember(@RequestParam int mno) {
         return memberService.getMember(mno);
     }
+*/
+     // 세션 구현 한[로그인된 회원정보] 정보 호출
+     // 회원 정보 호출
+     @GetMapping("/get")
+     public MemberDto doGet(){
+         MemberDto result = memberService.doGet();
+         return result;
+     }
 
     // 3. [U] 회원정보 수정
     @PutMapping("/put")
@@ -67,4 +75,7 @@ public class MemberController {
 
         return memberService.logout();
     }
+
+
+
 }

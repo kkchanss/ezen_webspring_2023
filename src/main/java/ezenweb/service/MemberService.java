@@ -25,6 +25,9 @@ public class MemberService {
     @Autowired
     MemberEntityRepository mr;
 
+    @Autowired
+    HttpServletRequest request;
+
     @Transactional
     public boolean postMember(MemberDto mdt)
     {
@@ -34,7 +37,7 @@ public class MemberService {
         MemberEntity result = mr.save(mdt.toEntity());
         return result.getMno() >=1;
     }
-    //2 r
+   /* //2 r
     @Transactional
     public MemberDto getMember(int mno)
     {
@@ -48,7 +51,21 @@ public class MemberService {
             return null;
         }
         return result;
+    }*/
+
+    // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★로그인 세션 있는거
+    @Transactional
+    public MemberDto doGet(){
+        // 세션 호출
+        Object session = request.getSession().getAttribute("loginDto");
+        // 세션 검증
+        if(session != null){
+            return (MemberDto)session;
+        }
+
+        return null;
     }
+
     //3 u
     @Transactional
     public boolean updateMember(MemberDto mdt)
