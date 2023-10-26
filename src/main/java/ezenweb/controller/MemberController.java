@@ -5,10 +5,6 @@ import ezenweb.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.lang.reflect.Member;
-import java.util.List;
-
 // IOC : 제어역전 ( 객체 관리를 스프링에게 위임 = 왜? 개발자가 편하려고/협업하려고(객체 공유해서 쓰려고))
 // DI(Dependency injection) : 의존성 주입 [ 스프링이 객체를 관리하리까.. 스프링에게 객체를 의존(부탁)해서 주입(가져오기)]
 @RestController // 컨트롤러(@Component 포함 = 스프링컨테이너(스프링 관리하는 메모리 공간) 빈(객체) 등록) + ResponseBody
@@ -76,6 +72,14 @@ public class MemberController {
         return memberService.logout();
     }
 
+    // 9. [R] [이메일 중복검사]
+    @GetMapping("/findMemail")
+    public boolean getFindMemail(@RequestParam String memail)
+    {
+        System.out.println("memail = " + memail);
+        //return memberService.findByMemail(memail);
+        return memberService.getFindMemail(memail);
+    }
 
 
 }

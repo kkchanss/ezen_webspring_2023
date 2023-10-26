@@ -1,21 +1,13 @@
 package ezenweb.service;
 
-import example.day06.NoteDto;
-import example.day06.NoteEntity;
 import ezenweb.model.dto.MemberDto;
 import ezenweb.model.entity.MemberEntity;
 import ezenweb.model.repository.MemberEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -149,5 +141,13 @@ public class MemberService {
             return true;
         }
         return false;
+    }
+
+    // 이메일 중복검사 
+    @Transactional
+    public boolean getFindMemail(String memail)
+    {
+        // 1. 이메일을 이용한 엔티티 찾기
+        return mr.existsByMemail(memail);
     }
 }
