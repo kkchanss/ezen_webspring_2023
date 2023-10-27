@@ -19,6 +19,7 @@ import Task02List from "./example/task/task02/Task02List";
 import Login from "./member/Login";
 import Signup from "./member/Signup";
 import Axios컴포넌트 from "./example/day04/1_Axios컴포넌트";
+import Info from "./member/Info";
 
 export default function Index(props) {
     return(<>
@@ -43,6 +44,7 @@ export default function Index(props) {
                     { /* MEMBER */ }
                     <Route path={'/login'} element={ < Login />} />
                     <Route path={'/signup'} element={ < Signup />} />
+                    <Route path={'/info'} element={ < Info />} />
                 </Routes>
                 <Footer/>
             </BrowserRouter>

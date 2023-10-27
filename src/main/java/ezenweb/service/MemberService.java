@@ -81,6 +81,7 @@ public class MemberService {
         if(mr.findById(mno).isPresent())
         {
             mr.deleteById(mno);
+            logout();
             return true;
         }else{
             return false;
