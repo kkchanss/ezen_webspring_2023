@@ -31,12 +31,22 @@ export default function Login( props ){
     return(<>
         <div className="loginContainer">
             <h3> 로그인 페이지 </h3>
-            <form>
+            <form action="/member/login" method="post">
+                아이디 <input type="text" placeholder='email address' name='memail' />
+                비밀번호 <input type="password"  placeholder='password' name='mpassword' />
+                <Link to=''>아이디찾기 </Link> <Link to=''> 비밀번호찾기 </Link>
+                <button type="submit">로그인</button>
+            </form>
+        </div>
+    </>)
+}
+
+/*
+                <form>
                 아이디 : <input
                     type="text"
                     placeholder={'email address'}
                     className={'memail'} />
-
                 <br/>
 
                 비밀번호 : <input
@@ -49,6 +59,4 @@ export default function Login( props ){
                 <Link to={''}>아이디 찾기</Link> <Link to={''}>비밀번호 찾기</Link>
                 <button onClick={onLogin} type={"button"}>로그인</button>
             </form>
-        </div>
-    </>)
-}
+ */

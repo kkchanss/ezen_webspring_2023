@@ -32,7 +32,7 @@ public class MemberController {
      // 회원 정보 호출
      @GetMapping("/get")
      public MemberDto doGet(){
-         MemberDto result = memberService.doGet();
+         MemberDto result = memberService.getMember();
          return result;
      }
 
@@ -47,6 +47,7 @@ public class MemberController {
         return memberService.deleteMember(mno);
     }
 
+ /*
     // 5. 아이디 찾기
     @PostMapping("/findid")
     public String findId(@RequestBody MemberDto memberDto) {
@@ -58,7 +59,7 @@ public class MemberController {
     public String findPw(@RequestBody MemberDto memberDto) {
         return memberService.findPw(memberDto);
     }
-
+*/
     // 7. 로그인
     @PostMapping("/login")
     public boolean login(@RequestBody MemberDto memberDto) {
@@ -69,7 +70,8 @@ public class MemberController {
     @GetMapping("/logout")
     public boolean logout() {
 
-        return memberService.logout();
+        //return memberService.logout();
+        return false;
     }
 
     // 9. [R] [이메일 중복검사]
