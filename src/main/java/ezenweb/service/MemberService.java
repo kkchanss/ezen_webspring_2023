@@ -11,6 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,14 +24,27 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
-public class MemberService implements UserDetailsService {
+public class MemberService implements
+        UserDetailsService, // 일반회원 서비스 : loadUserByUsername 메소드 구현
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> { // Oauth2 회원 서비스 : loadUser 메소드 구현 [oauth2 로그인된 회원정보를 받는 메소드]
 
-    // ------------------------------------------------ //
+    // ---------------------------------------- 2. Oauth2 회원 ------------------------------------- //
+
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        // 1. 로그인을 성공한 oauth2 계정의 정보 호출
+        OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
+        System.out.println("oAuth2User = " + oAuth2User);
+        return null;
+    }
+
+    // ---------------------------------------- 1. 일반 회원 ------------------------------------- //
         // p. 687
         // 1. UserDetailsService 구현체
         // 2. 인증처리 해주는 메소드 구현 [loadUserByUsername]
         // 3. loadUserByUsername 메소드는 무조건(꼭) UserDetails객체를 반환해야 한다.
         // 4. UserDetails 객체를 이용한 패스워드 검증과 사용자 권한을 확인 하는 동작(메소드)
+
 
     // @Autowired : 사용불가 (스프링 컨테이너에 등록 안된 빈(객체)이므로 불가능)
     private PasswordEncoder passwordEncoder= new BCryptPasswordEncoder();
@@ -217,6 +236,5 @@ public class MemberService implements UserDetailsService {
         // 1. 이메일을 이용한 엔티티 찾기
         return mr.existsByMemail(memail);
     }
-
 
 }
