@@ -68,7 +68,8 @@ public class MemberService implements
         if(o.equals("anonymousUser")) { return null; } // 로그인 안해썽 ..
         // 2. 인증결과에 저장된 UserDetails로 타입 변환
         UserDetails userDetails = (UserDetails)o;
-        return MemberDto.builder().memail(userDetails.getUsername()).build();
+        MemberEntity memberEntity = mr.findByMemail(userDetails.getUsername());
+        return MemberDto.builder().memail(userDetails.getUsername()).mno(memberEntity.getMno()).build();
     }
 
     // 8.

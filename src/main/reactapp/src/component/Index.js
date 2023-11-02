@@ -21,6 +21,10 @@ import Signup from "./member/Signup";
 import Axios컴포넌트 from "./example/day04/1_Axios컴포넌트";
 import Info from "./member/Info";
 
+/* Board import */
+import BoardList from "./board/BoardList";
+import BoardWrite from "./board/BoardWrite";
+
 export default function Index(props) {
     return(<>
         <div className={"webContainer"}>
@@ -45,6 +49,10 @@ export default function Index(props) {
                     <Route path={'/login'} element={ < Login />} />
                     <Route path={'/signup'} element={ < Signup />} />
                     <Route path={'/info'} element={ < Info />} />
+
+                    { /* BOARD */ }
+                    <Route path={'/board/list'} element={ <BoardList />} />
+                    <Route path={'/board/write'} element={ <BoardWrite /> } />
                 </Routes>
                 <Footer/>
             </BrowserRouter>
