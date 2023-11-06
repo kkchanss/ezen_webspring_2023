@@ -38,4 +38,9 @@ public class BoardController {
 
         return boardService.delete(bno);
     }
+
+    @GetMapping("/one") // 하나만 가져오기
+    public BoardDto getOne(@RequestParam int bno) {
+        return boardService.getOne(bno);
+    }
 }

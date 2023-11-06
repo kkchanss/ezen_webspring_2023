@@ -88,4 +88,15 @@ public class BoardService {
 
         return false;
     }
+
+    @Transactional
+    public BoardDto getOne(int bno) {
+
+        Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById(bno);
+
+        if(optionalBoardEntity.isPresent()) {
+            return optionalBoardEntity.get().saveToDto();
+        }
+        return null;
+    }
 }

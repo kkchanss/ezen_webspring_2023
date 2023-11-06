@@ -22,9 +22,9 @@ public class MemberEntity extends BaseTime{
     private String memail;      // 2. 이메일 [ 회원아이디 객체 ]
     @Column(length = 100, nullable = false) // 해당 필드 선정
     private String mpassword;   // 3. 비밀번호
-    @Column(length = 20, nullable = false) // 해당 필드 선정
+    @Column(length = 100, nullable = false) // 해당 필드 선정
     private String mname;       // 4. 이름
-    @Column(length = 14, nullable = false, unique = true) // 해당 필드 선정
+    @Column(length = 100, nullable = false, unique = true) // 해당 필드 선정
     private String mphone;      // 5. 연락처
     @Column // 해당 필드 선정
     @ColumnDefault("'ROLE_USER'") // ColumnDefault("초기값") ColumnDefault("'문자일경우'")

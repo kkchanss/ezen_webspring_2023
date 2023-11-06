@@ -1,5 +1,29 @@
+/*
+    mui : 리액트 전용 라이브러리
+        1. 설치
+            npm install @mui/material @emotion/react @emotion/styled
+            npm install @mui/material @mui/styled-engine-sc styled-components
+        2. 예제
+            호출할 컴포넌트 상단에 import 하기
+            import Button from '@mui/material/Button';
+
+ */
+
 import axios from 'axios';
 import {useState, useEffect} from "react";
+// ---------------- mui table 관련 컴포넌트 import ----------------------- //
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import {Link} from "react-router-dom";
+// -------------------------------- //
+
+// -------------------------- mui table sample ------------------------ //
+
 
 export default function BoardList(props) {
 
@@ -26,15 +50,48 @@ export default function BoardList(props) {
     ];*/
 
     return(<>
-       <div>
-           <h3> 게시물 목록 </h3>
-           <a href="/board/write">글 쓰기</a>
+
+        <h3> 게시물 목록 </h3>
+        <a href="/board/write">글 쓰기</a>
+
+        <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                {/* 테이블 내용 구역  */}
+                <TableHead>
+                    <TableRow>
+                        <TableCell align="right">번호</TableCell>
+                        <TableCell align="right">제목</TableCell>
+                        <TableCell align="right">작성자</TableCell>
+                        <TableCell align="right">작성일</TableCell>
+                        <TableCell align="right">조회수</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {rows.map((row) => (
+                        <TableRow
+                            key={row.name}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                            <TableCell align="right">{row.bno}</TableCell>
+                            <TableCell align="right"><Link to={"/board/view?bno="+row.bno}>  {row.btitle} </Link></TableCell>
+                            <TableCell align="right">{row.mno}</TableCell>
+                            <TableCell align="right">{row.cdate}</TableCell>
+                            <TableCell align="right">{row.bview}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </>)
+}
+
+{ /* <div>
+
            <table>
                <tr>
                    <th>번호</th> <th>제목</th> <th>작성자</th>
                    <th>작성일</th> <th>조회수</th>
                </tr>
-               { /* 게시물 내용 반복 */ }
                {
                    rows.map((row)=>{
                        return(<>
@@ -46,6 +103,4 @@ export default function BoardList(props) {
                    })
                }
            </table>
-       </div>
-    </>)
-}
+       </div> */ }

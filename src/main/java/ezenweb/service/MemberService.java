@@ -4,6 +4,8 @@ import ezenweb.model.dto.MemberDto;
 import ezenweb.model.entity.MemberEntity;
 import ezenweb.model.repository.MemberEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +23,15 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MemberService implements
         UserDetailsService, // 일반회원 서비스 : loadUserByUsername 메소드 구현
         OAuth2UserService<OAuth2UserRequest, OAuth2User> { // Oauth2 회원 서비스 : loadUser 메소드 구현 [oauth2 로그인된 회원정보를 받는 메소드]
+
+    @Autowired
+    MemberEntityRepository memberEntityRepository;
 
     // ---------------------------------------- 2. Oauth2 회원 ------------------------------------- //
 
@@ -35,7 +40,75 @@ public class MemberService implements
         // 1. 로그인을 성공한 oauth2 계정의 정보 호출
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
         System.out.println("oAuth2User = " + oAuth2User);
-        return null;
+
+        // 2. 인증결과 (카카오, 네이버, 구글)
+        // 2-1 인증한 소셜 서비스 아이디 (각 회사명) 찾기
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        System.out.println("registrationId = " + registrationId);
+
+        String memail = null; String mname = null;
+
+        // 2-2 카카오이면
+        if(registrationId.equals("kakao")) {
+            // oAuth2User : Name : [3142825703], Granted Authorities: [[ROLE_USER, SCOPE_account_email, SCOPE_profile_nickname]], User Attributes: [{id=3142825703, connected_at=2023-11-01T03:22:57Z, properties={nickname=찬희}, kakao_account={profile_nickname_needs_agreement=false, profile_image_needs_agreement=true, profile={nickname=찬희}, has_email=true, email_needs_agreement=false, is_email_valid=true, is_email_verified=true, email=rlacksgml99@naver.com, has_gender=true, gender_needs_agreement=true}}]
+            System.out.println("kakao_account : " + oAuth2User.getAttribute("kakao_account"));
+
+            Map<String, Object> kakao_account = (Map<String, Object>)oAuth2User.getAttributes().get("kakao_account");
+            Map<String, Object> profile = (Map<String, Object>)kakao_account.get("profile");
+
+            memail = kakao_account.get("email").toString();
+            mname = profile.get("nickname").toString();
+
+            System.out.println("mname = " + mname);
+            System.out.println("memail = " + memail);
+        }
+        // 2-2 네이버이면
+        if(registrationId.equals("naver")) {
+            // oAuth2User = Name: [{id=pyniTXs2QmQgi95Me6E7oSejPEL5fFAwjN9miDZj32c, nickname=Java, email=rlacksgml99@naver.com}], Granted Authorities: [[ROLE_USER]], User Attributes: [{resultcode=00, message=success, response={id=pyniTXs2QmQgi95Me6E7oSejPEL5fFAwjN9miDZj32c, nickname=Java, email=rlacksgml99@naver.com}}]
+            Map<String, Object> response = (Map<String, Object>)oAuth2User.getAttributes().get("response");
+            memail = response.get("email").toString();
+            mname = response.get("nickname").toString();
+            System.out.println("mname = " + mname);
+            System.out.println("memail = " + memail);
+        }
+        // 2-2 구글이면
+        if(registrationId.equals("google")) {
+            // oAuth2User = Name: [103299139840618459579], Granted Authorities: [[ROLE_USER, SCOPE_https://www.googleapis.com/auth/userinfo.email, SCOPE_https://www.googleapis.com/auth/userinfo.profile, SCOPE_openid]], User Attributes: [{sub=103299139840618459579, name=김찬희, given_name=찬희, family_name=김, picture=https://lh3.googleusercontent.com/a/ACg8ocKVe_WZs4iKOXmnfDEZ_GU5X6ScgSajnooNMQDWau4f=s96-c, email=rlacksgml99@gmail.com, email_verified=true, locale=ko}]
+            memail = oAuth2User.getAttributes().get("email").toString();
+            mname = oAuth2User.getAttributes().get("name").toString();
+        }
+
+        // 3: 일반회원(UseDetails) + OAUTH2(OAuth2User) 통합회원 = DTO 같이 쓰기
+            // 3-1 권한 목록에 추가
+        List<GrantedAuthority> 권한목록 = new ArrayList<GrantedAuthority>();
+        권한목록.add(new SimpleGrantedAuthority("ROLE_" + registrationId));
+            // 3-2 DTO 만들기
+        MemberDto memberDto = MemberDto.builder()
+                // oauth2는 패스워드를 알 수 없다..
+                .memail(memail)
+                .mname(mname)
+                .권한목록(권한목록)
+                .소셜회원정보(oAuth2User.getAttributes())
+                .build();
+            // 3-3 DB 처리
+                // 만약 처음 접속한 OAUTH2 회원이면 DB처리
+                // 아니면 DB 처리 x
+        if(!memberEntityRepository.existsByMemail(memberDto.getMemail())) { // 해당 이메일이 db에 없으면
+            memberDto.setMrole("ROLE_USER");
+            memberDto.setMpassword(new BCryptPasswordEncoder().encode(mname)); // db null 피하기 위해
+            // 난수
+            Random random = new Random();
+            int front = random.nextInt(999);
+            int middle = random.nextInt(9999);
+            int back = random.nextInt(9999);
+            memberDto.setMphone(front + "-" + middle + "-" + back);
+            memberEntityRepository.save(memberDto.toEntity());
+        }else{ // 만약에 처음 접속이 아니면 기존 권한을 db에서 가져와서 넣어주기 !
+            memberDto.setMrole(memberEntityRepository.findByMemail(memail).getMrole());
+        }
+        // 권한 추가
+        memberDto.get권한목록().add(new SimpleGrantedAuthority(memberDto.getMrole()));
+        return memberDto;
     }
 
     // ---------------------------------------- 1. 일반 회원 ------------------------------------- //
@@ -85,12 +158,26 @@ public class MemberService implements
         // throw : 예외처리 던지기 // new UsernameNotFoundException() : username 없을때 사용하는 예외클래스
         if(memberEntity == null) { throw new UsernameNotFoundException("없는 아이디입니다."); }
         // 2. 로딩[불러오기]된 사용자의 정보를 이용해서 패스워드를 검증
-            // 2-1 있는 아이디이면
+/*            // 2-1 있는 아이디이면
         UserDetails userDetails = User.builder()
                 .username(memberEntity.getMemail()) // 찾은 사용자 정보의 아이디
                 .password(memberEntity.getMpassword()) // 찾은 사용자의 정보 내 패스워드
-                .authorities(memberEntity.getMrole()).build(); // 찾은 사용자 정보의 권한
-        return userDetails;
+                .authorities(memberEntity.getMrole()).build(); // 찾은 사용자 정보의 권한*/
+        // 2-1 권한 목록에 추가
+        List<GrantedAuthority> 권한목록 = new ArrayList<>();
+        권한목록.add(new SimpleGrantedAuthority(memberEntity.getMrole()));
+
+        // 2-2 DTO 만들기
+        MemberDto memberDto = MemberDto.builder()
+                .memail(memberEntity.getMemail())
+                .mpassword(memberEntity.getMpassword())
+                .mname(memberEntity.getMname())
+                .권한목록(권한목록)
+                .build();
+
+
+
+        return memberDto;
     }
     // ------------------------------------------------ //
 
