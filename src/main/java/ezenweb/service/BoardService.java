@@ -63,14 +63,15 @@ public class BoardService {
     }
     @Transactional
     public boolean update(BoardDto boardDto) {
-
+        System.out.println("boardDto = " + boardDto);
         Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById(boardDto.getBno());
 
         if(optionalBoardEntity.isPresent()) {
             BoardEntity boardEntity = optionalBoardEntity.get();
             boardEntity.setBtitle(boardDto.getBtitle());
             boardEntity.setBcontent(boardDto.getBcontent());
-            boardEntity.setBfile(boardDto.getBfile());
+
+            //boardEntity.setBfile(boardDto.getBfile());
             return true;
         }
 
