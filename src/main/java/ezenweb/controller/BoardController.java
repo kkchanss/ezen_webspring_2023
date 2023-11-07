@@ -1,8 +1,10 @@
 package ezenweb.controller;
 
 import ezenweb.model.dto.BoardDto;
+import ezenweb.model.dto.PageDto;
 import ezenweb.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,25 +17,28 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    @PostMapping("")
+    @PostMapping("") // 게시물 등록
     public boolean write(BoardDto boardDto) {
 
         return boardService.write(boardDto);
     }
 
-    @GetMapping("")
-    public List<BoardDto> getAll() {
+    @GetMapping("") // 게시물 해당 페이지 출력
+    public PageDto getAll(
+            @RequestParam int page,
+            @RequestParam String key,
+            @RequestParam String keyword) {
 
-        return boardService.getAll();
+        return boardService.getAll(page, key, keyword);
     }
 
-    @PutMapping("")
+    @PutMapping("") // 게시물 수정
     public boolean update(BoardDto boardDto) {
 
         return boardService.update(boardDto);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("") // 게시물 삭제
     public boolean delete(@RequestParam int bno) {
 
         return boardService.delete(bno);
@@ -43,4 +48,5 @@ public class BoardController {
     public BoardDto getOne(@RequestParam int bno) {
         return boardService.getOne(bno);
     }
+
 }
