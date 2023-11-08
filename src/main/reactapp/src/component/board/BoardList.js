@@ -40,21 +40,27 @@ export default function BoardList(props) {
     // 0. 스프링에게 전달할 객체
     const [ pageInfo, setPageInfo ] = useState( {
         page : 1,
-        key : '',
-        keyword : ''
+        key : 'btitle',
+        keyword : '',
+        size : 5
     }); console.log(pageInfo)
 
+    // const [ searchState, setSearchState ] = useState( false );
 
-    // 실행조건 : 최초, 페이지 전환됐을때
-    useEffect(() => { // 컴포넌트가 생성될때 1번 실행
-        // 1. axios를 이용한 스프링의 컨트롤과 통신
-        axios.get('/board', {params : {page : pageInfo.page, key : pageInfo.key, keyword : pageInfo.keyword}}).then(r => {
+    const getBoard = (e) => {
+        axios.get('/board', {params : pageInfo}).then(r => {
             // r.data : PageDto
             // r.data.boardDtos : PageDto 안에 List<BoardDto>
             setPageDto(r.data); // 응답받은 모든 게시물을 상태변수에 저장
             // setState : 해당 컴포넌트가 업데이트(새로고침/재렌더링/return재실행)
         });
-    }, [pageInfo]);
+    }
+
+    // 실행조건 : 최초, 페이지 전환됐을때
+    useEffect(() => { // 컴포넌트가 생성될때 1번 실행
+        // 1. axios를 이용한 스프링의 컨트롤과 통신
+        getBoard();
+    }, [pageInfo.page, pageInfo.size]);
 
     // 2. 페이지 번호 클릭했을때
     const onPageSelect = (e, value) => {
@@ -64,25 +70,45 @@ export default function BoardList(props) {
 
     // 3. 검색 버튼 눌렀을때
     const onSearch = (e) => {
-
+        setPageInfo({...pageInfo, page : 1});
+        getBoard();
     }
+
+
 
     return(<>
         <h3> 게시물 목록 </h3>
         <a href="/board/write">글 쓰기</a>
-        <div className={"test1"}>
-            <p> page : { pageInfo.page } </p>
-        </div>
+        <p> page : { pageInfo.page } totalCount : {pageInfo.totalPAge} </p>
+        <select
+            value={pageInfo.size}
+            onChange={(e)=>{setPageInfo({...pageInfo, size : e.target.value})}}
+        >
+            <option value="5"> 5 </option>
+            <option value="10"> 10 </option>
+            <option value="15"> 15 </option>
+        </select>
+
+        {
+            pageInfo.keyword != ''?
+                (<> <button type={"button"}
+                    onClick={(e) => {window.location.href="/board/list"}}> 검색제거 </button> </>)
+                :
+                (<></>)
+
+        }
+
+
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 {/* 테이블 내용 구역  */}
                 <TableHead>
                     <TableRow>
-                        <TableCell align="right">번호</TableCell>
-                        <TableCell align="right">제목</TableCell>
-                        <TableCell align="right">작성자</TableCell>
-                        <TableCell align="right">작성일</TableCell>
-                        <TableCell align="right">조회수</TableCell>
+                        <TableCell style={{width : '5%'}} align="center">번호</TableCell>
+                        <TableCell style={{width : '60%'}} align="center">제목</TableCell>
+                        <TableCell style={{width : '15%'}} align="center">작성자</TableCell>
+                        <TableCell style={{width : '15%'}} align="center">작성일</TableCell>
+                        <TableCell style={{width : '5%'}} align="center">조회수</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -91,11 +117,11 @@ export default function BoardList(props) {
                             key={row.name}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell align="right">{row.bno}</TableCell>
-                            <TableCell align="right"><Link to={"/board/view?bno="+row.bno}>  {row.btitle} </Link></TableCell>
-                            <TableCell align="right">{row.mno}</TableCell>
-                            <TableCell align="right">{row.cdate}</TableCell>
-                            <TableCell align="right">{row.bview}</TableCell>
+                            <TableCell align="center">{row.bno}</TableCell>
+                            <TableCell align="left"><Link to={"/board/view?bno="+row.bno}>  {row.btitle} </Link></TableCell>
+                            <TableCell align="center">{row.memail}</TableCell>
+                            <TableCell align="center">{row.cdate}</TableCell>
+                            <TableCell align="center">{row.bview}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -103,7 +129,7 @@ export default function BoardList(props) {
         </TableContainer>
         <div style={{display:"flex", flexDirection:"column", alignItems:"center", margin:'10px'}}>
             {/* count : 전체페이지수 onChange : 페이지번호를 클릭/변경했을때 이벤트 */}
-            <Pagination count={pageDto.totalPages} onChange={onPageSelect}/>
+            <Pagination count={pageDto.totalPages} page={pageInfo.page} onChange={onPageSelect}/>
 
             {/* 검색 */}
             <div style = {{margin : "20px"}}>

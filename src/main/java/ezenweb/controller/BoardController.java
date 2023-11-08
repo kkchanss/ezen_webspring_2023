@@ -27,9 +27,10 @@ public class BoardController {
     public PageDto getAll(
             @RequestParam int page,
             @RequestParam String key,
-            @RequestParam String keyword) {
+            @RequestParam String keyword,
+            @RequestParam int size) {
 
-        return boardService.getAll(page, key, keyword);
+        return boardService.getAll(page, key, keyword, size);
     }
 
     @PutMapping("") // 게시물 수정

@@ -43,8 +43,9 @@ public class BoardEntity extends BaseTime{ // 테이블 설계
                 .bfile(this.bfile)
                 .bview(this.bview)
                 .mno(this.memberEntity.getMno())
-                .cdate(this.getCdate())
-                .udate(this.getUdate())
+                .memail(this.memberEntity.getMemail().split("@")[0])
+                .cdate(toTimeOrDate(this.getCdate())) // 구글링 : JAVA LocalDateTime 형식 변환
+                .udate(toTimeOrDate(this.getUdate()))
                 .build();
     }
 }

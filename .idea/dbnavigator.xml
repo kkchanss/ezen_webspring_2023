@@ -13,9 +13,21 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="360eef36-3bc6-4b75-8703-63f93aa179d3">
-      <console name="springweb" type="STANDARD" schema="springweb" session="Main"><![CDATA[desc member;
+      <console name="springweb" type="STANDARD" schema="springweb" session="Main"><![CDATA[select * from board;
 
-select * from member;]]></console>
+select * from board where btitle like '%%';
+
+# 매개변수로는 필드명으로 바로 사용이 불가능 
+# DB IF문
+# if( 조건문, 참, 거짓 )
+select if(3>10, '3이크다', '3이작다') from dual; # dual : 임시테이블
+select if(5>6, if(5>3, '크다', '작다'), '작다') from dual;
+
+select if(key = "btitle", "타이틀검색", if(key = "bcontent", "내용검색", "")) from dual;
+
+# 만약에 keyword가 null이면 있으면 조건(제목,내용) 검색 
+if(keyword = "", "전체검색", "조건검색")
+if(keyword = "", "전체검색", if(key = "btitle", "타이틀검색", if(key = "bcontent", "내용검색", ""))]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
