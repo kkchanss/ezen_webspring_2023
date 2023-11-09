@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,10 @@ public class BoardService {
 
     @Autowired
     private MemberEntityRepository memberEntityRepository;
+
+    @Autowired
+    private FileService fileService;
+
     @Transactional
     public boolean write(BoardDto boardDto) {
         // 1. FK 키의 엔티티를 찾는다
@@ -51,7 +57,13 @@ public class BoardService {
         boardEntity.setMemberEntity(memberEntityOptional.get());
         // 양방향
         memberEntityOptional.get().getBoardEntityList().add(boardEntity);
-        return boardEntity.getBno()>=1;
+        if(boardEntity.getBno()>=1) {
+            // 게시물 쓰기 성공시 파일 처리
+            String filename = fileService.fileUpload(boardDto.getFile());
+            if(filename != null) { boardEntity.setBfile(filename);}
+            return true;
+        }
+        return false;
     }
     @Transactional
     public PageDto getAll(int page, String key, String keyword, int size) { // + 검색기능

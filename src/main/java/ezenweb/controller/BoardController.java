@@ -3,11 +3,13 @@ package ezenweb.controller;
 import ezenweb.model.dto.BoardDto;
 import ezenweb.model.dto.PageDto;
 import ezenweb.service.BoardService;
+import ezenweb.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -16,6 +18,9 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private FileService fileService;
 
     @PostMapping("") // 게시물 등록
     public boolean write(BoardDto boardDto) {
@@ -48,6 +53,12 @@ public class BoardController {
     @GetMapping("/one") // 하나만 가져오기
     public BoardDto getOne(@RequestParam int bno) {
         return boardService.getOne(bno);
+    }
+
+    // 첨부파일 다운로드 요청
+    @GetMapping("/filedownload")
+    public void filedownload(@RequestParam String uuidFile) {
+        fileService.fileDownload(uuidFile);
     }
 
 }

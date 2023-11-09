@@ -3,6 +3,7 @@ package ezenweb.model.dto;
 import ezenweb.model.entity.BoardEntity;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import java.time.LocalDateTime;
@@ -18,6 +19,8 @@ public class BoardDto {
     private String bfile;
     private int mno;
     private String memail;
+    // 첨부파일 [ spring 지원하는 파일 라이브러리 ]
+    private MultipartFile file;
     // +
     private String cdate;
     private String udate;
@@ -30,5 +33,4 @@ public class BoardDto {
                 .bfile(this.bfile)
                 .build();
     }
-
 }

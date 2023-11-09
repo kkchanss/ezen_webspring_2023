@@ -1,5 +1,5 @@
 // ------------------------- JS 형식 ------------------------ //
-import {userState, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 
 export default function 생명주기컴포넌트(){
 
