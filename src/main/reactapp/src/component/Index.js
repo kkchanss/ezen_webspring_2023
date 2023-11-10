@@ -26,6 +26,7 @@ import BoardList from "./board/BoardList";
 import BoardWrite from "./board/BoardWrite";
 import BoardView from "./board/BoardView";
 import BoardUpdate from "./board/BoardUpdate";
+import ProductAdmin from "./product/ProductAdmin";
 
 export default function Index(props) {
     return(<>
@@ -57,6 +58,9 @@ export default function Index(props) {
                     <Route path={'/board/write'} element={ <BoardWrite /> } />
                     <Route path={'/board/view'} element={ <BoardView /> } />
                     <Route path={'/board/update'} element={ <BoardUpdate /> } />
+
+                    {/* ADMIN */}
+                    <Route path={'/admin/product'} element={ <ProductAdmin/>}/>
                 </Routes>
                 <Footer/>
             </BrowserRouter>

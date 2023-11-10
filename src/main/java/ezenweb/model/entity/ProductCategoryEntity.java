@@ -1,17 +1,29 @@
 package ezenweb.model.entity;
 
+import ezenweb.model.dto.ProductCategoryDto;
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity@Table(name="productcategory")
-public class ProductCategoryEntity { /*제품 카테고리*/
+@AllArgsConstructor @NoArgsConstructor
+@Getter @Setter @Builder @ToString
+public class ProductCategoryEntity extends BaseTime { /*제품 카테고리*/
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pcno; // 카테고리 번호 [PK]
     @Column private String pcname; // 카테고리 이름
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productCategoryEntity", cascade = CascadeType.ALL)
     private List<ProductEntity> productEntities = new ArrayList<>();
+
+    public ProductCategoryDto toProductCategoryDto() {
+        return ProductCategoryDto.builder()
+                .pcno(this.pcno)
+                .pcname(this.pcname)
+                .build();
+    }
 
     /*
        --------------------------------- DB와 상관없지만 매핑되어있기 때문에 DB에도 변화 ---------------------------------

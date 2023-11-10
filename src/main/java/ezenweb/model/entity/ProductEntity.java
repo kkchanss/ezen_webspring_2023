@@ -1,6 +1,7 @@
 package ezenweb.model.entity;
 
-import lombok.ToString;
+import ezenweb.model.dto.ProductDto;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -8,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity @Table(name ="product")
-public class ProductEntity { /* 제품 테이블 */
+@AllArgsConstructor @NoArgsConstructor
+@Getter @Setter @ToString @Builder
+public class ProductEntity extends BaseTime { /* 제품 테이블 */
 
     @Id private String pno; // 제품번호 [PK]
     @Column private String pname; // 제품명
@@ -27,4 +30,16 @@ public class ProductEntity { /* 제품 테이블 */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productEntity", cascade = CascadeType.ALL) // mappedBy 안하면 DB에서 서로 연결해주는 테이블 하나 더 생성하게 됨
     private List<ProductImgEntity> productImgEntities = new ArrayList<>();
     // OneToMany(mappedBy = "fk 사용중인 엔티티클래스 필드명")
+
+    public ProductDto toProductDto() {
+        return ProductDto.builder()
+                .pno(this.pno)
+                .pname(this.pname)
+                .pcomment(this.pcomment)
+                .pprice(this.pprice)
+                .pstate(this.pstate)
+                .pstock(this.pstock)
+                .build();
+    }
+
 }
