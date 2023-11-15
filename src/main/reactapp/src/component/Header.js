@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import styles from '../css/header.css'
 import axios from "axios";
-import {useEffect, useState} from "react";
-
-
+import {useEffect, useState, useRef} from "react";
+    // useRef : 해당 컴포넌트/함수가 재랜더링/재호출 할때 상태유지
 export default function Header( props ){
 
+    // 로그인 상태를 저장할 상태변수 선언
     let [ login, setLogin] = useState(null);
 
     // 로그아웃

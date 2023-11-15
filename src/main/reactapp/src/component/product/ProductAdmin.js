@@ -15,7 +15,7 @@ import {useState} from "react";
 
 export default function ProductAdmin(props){
     // 2.
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState('1');
 
     // 3.
     const handleChange = (event, newValue) => {

@@ -8,10 +8,12 @@ import javax.persistence.*;
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @Builder @ToString
 public class ProductImgEntity extends BaseTime { /*제품이미지파일*/
-    @Id private String uuidFile; // 이미지식별이름[PK]
+    @Id
+    private String uuidFile; // 이미지식별이름[PK]
     @Column private String realFileName; // 이미지실제이름
 
     // FK 만들기
+    @ToString.Exclude
     @JoinColumn(name="pno")
     @ManyToOne
     private ProductEntity productEntity;

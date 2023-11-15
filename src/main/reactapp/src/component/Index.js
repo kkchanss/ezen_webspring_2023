@@ -28,17 +28,63 @@ import BoardView from "./board/BoardView";
 import BoardUpdate from "./board/BoardUpdate";
 import ProductAdmin from "./product/ProductAdmin";
 
+/* 리액트 훅 라이브러리 */
+import { useState, useEffect, useRef, createContext } from 'react';
+
+/* MUI 라이브러리 호출 */
+import { useSnackbar } from "notistack";
+
+/* 리액트 Context 변수 */
+export const SocketContext = createContext();
+
 export default function Index(props) {
+
+    /* MUI 라이브러리 객체 호출 */
+    const { enqueueSnackbar } = useSnackbar();
+
+    // 일반변수 : let 변수명 = 10 : 함수 안에서 선언되었으므로 함수 재실행/재랜더링 될때 초기화 반복적으로 이루어짐
+        // 변수 출력시 : 10
+    // Ref상태변수 : let 변수명 = useRef(10) : 함수안에서 선언이 되었지만 해당 컴포넌트 업데이트(재랜더링)될때 초기화 안됨
+        // Ref상태변수 출력시 : {current : 10}
+        // Ref상태변수는 current 속성에 초기값을 저장하고 객체를 가지는 구조
+        // 웹소켓은 반복적으로 초기화가 되면 안되니까 일단 변수보다는 useRef에 저장하면
+        // 웹소켓은 반복적으로 초기화가 되면 안되니까 일단 변수보단 useRef에 저장하면 좀더 효율적인 메모리 가능
+    // 2. 웹소켓
+    // =========================== 소켓 start =========================== //
+    console.log(createContext());
+    // * 웹소켓 객체를 담은 useRef변수 생성
+    let clientSocket = useRef(null);
+    // 1. 만약에 웹소켓 객체가 비어있으면
+    if(!clientSocket.current) {
+        // 1. 서버소켓과 연결하기
+        clientSocket.current = new WebSocket("ws://localhost:8080/chat");
+        // 2. 클라이언트소켓의 각 기능/메소드들의 기능 구현하기
+            // 1. 서버소켓과 연동 성공했을때. 이후 행동/메소드 정의
+        clientSocket.current.onopen = (e) => { console.log(e) }
+            // 2. 서버소켓과 연동 오류났을때. 이후 행동/메소드 정의
+        clientSocket.current.onerror = (e) => { console.log(e) }
+            // 3. 서버소켓과 연결 끊겼을때. 이후 행동/메소드 정의
+        clientSocket.current.onclose = (e) => { console.log(e) }
+            // 4. 서버소켓으로부터 메시지를 받았을때. 이후 행동/메소드 정의
+        clientSocket.current.onmessage = (e) => {
+            console.log(e)
+            alert(e.data);
+        }
+    }
+
+    // =========================== 소켓 end ============================= //
+
     return(<>
         <div className={"webContainer"}>
-            <BrowserRouter>
-                <Header/>
-                <Routes>
-                    {/* MAIN */}
-                    <Route path={'/'} element={< Main />} />
+            <SocketContext.Provider value={clientSocket}>
+                <BrowserRouter>
+                    <Header/>
+                    <Routes>
+                        {/* MAIN */}
+                        <Route path={'/'} element={< Main />} />
 
-                    {/* EXAMPLE*/}
-                    <Route path={'/example'} element={ < ExampleList />} />
+                        {/* EXAMPLE*/}
+                        <Route path={'/example'} element={ < ExampleList />} />
                         <Route path={'/example/day01/컴포넌트1'} element={ < 컴포넌트1 />} />
                         <Route path={'/example/day01/컴포넌트2'} element={ < 컴포넌트2 />} />
                         <Route path={'/example/day01/컴포넌트3'} element={ < 컴포넌트3 />} />
@@ -48,22 +94,23 @@ export default function Index(props) {
                         <Route path={'/example/task/Task02List'} element={ < Task02List />} />
                         <Route path={'/example/task/도서목록'} element={ < 도서목록 />} />
                         <Route path={'/example/day04/Axios컴포넌트'} element={ < Axios컴포넌트 /> } />
-                    { /* MEMBER */ }
-                    <Route path={'/login'} element={ < Login />} />
-                    <Route path={'/signup'} element={ < Signup />} />
-                    <Route path={'/info'} element={ < Info />} />
+                        { /* MEMBER */ }
+                        <Route path={'/login'} element={ < Login />} />
+                        <Route path={'/signup'} element={ < Signup />} />
+                        <Route path={'/info'} element={ < Info />} />
 
-                    { /* BOARD */ }
-                    <Route path={'/board/list'} element={ <BoardList />} />
-                    <Route path={'/board/write'} element={ <BoardWrite /> } />
-                    <Route path={'/board/view'} element={ <BoardView /> } />
-                    <Route path={'/board/update'} element={ <BoardUpdate /> } />
+                        { /* BOARD */ }
+                        <Route path={'/board/list'} element={ <BoardList />} />
+                        <Route path={'/board/write'} element={ <BoardWrite /> } />
+                        <Route path={'/board/view'} element={ <BoardView /> } />
+                        <Route path={'/board/update'} element={ <BoardUpdate /> } />
 
-                    {/* ADMIN */}
-                    <Route path={'/admin/product'} element={ <ProductAdmin/>}/>
-                </Routes>
-                <Footer/>
-            </BrowserRouter>
+                        {/* ADMIN */}
+                        <Route path={'/admin/product'} element={ <ProductAdmin/>}/>
+                    </Routes>
+                    <Footer/>
+                </BrowserRouter>
+            </SocketContext.Provider>
         </div>
     </>)
 }

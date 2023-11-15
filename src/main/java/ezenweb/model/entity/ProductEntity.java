@@ -3,17 +3,21 @@ package ezenweb.model.entity;
 import ezenweb.model.dto.ProductDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Table(name ="product")
+@Entity
+@Table(name ="product")
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @ToString @Builder
+@DynamicInsert
 public class ProductEntity extends BaseTime { /* 제품 테이블 */
 
-    @Id private String pno; // 제품번호 [PK]
+    @Id
+    private String pno; // 제품번호 [PK]
     @Column private String pname; // 제품명
     @Column(columnDefinition = "LONGTEXT") private String pcomment; // 제품설명
     @Column private int pprice; // 제품가격
