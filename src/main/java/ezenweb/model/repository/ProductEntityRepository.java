@@ -15,7 +15,11 @@ public interface ProductEntityRepository extends JpaRepository<ProductEntity, St
     @Query(value = "select pname, pstock from product", nativeQuery = true) // mysql 사용했던 sql문을 사용 가능
     List<Map<Object, Object>> findByBarChart();
     // 2. 모든 카테고리의 제품 수 검색
-    @Query(value = "select", nativeQuery = true)
+    @Query(value = "select pc.pcname, count(*) as count " +
+            " from product p inner join productcategory pc " +
+            " on p.pcno = pc.pcno " + // on 절 : pk-fk 교/합 집합 위한 조인 조건절 vs where 조건절
+            "group by pc.pcname" // group by 필드명 : ~~별(그룹)
+            , nativeQuery = true)
     List<Map<Object, Object>> findByPieChart();
 
     /*
